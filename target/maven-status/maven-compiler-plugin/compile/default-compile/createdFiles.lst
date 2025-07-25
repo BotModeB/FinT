@@ -1,0 +1,15 @@
+com\finances\finT\Controllers\categoryDTO.class
+com\finances\finT\models\users.class
+com\finances\finT\Controllers\categoryController.class
+com\finances\finT\FinTApplication.class
+com\finances\finT\repositories\CategoryRepository.class
+com\finances\finT\models\expenses.class
+com\finances\finT\repositories\UserRepository.class
+com\finances\finT\models\categories.class
+com\finances\finT\Service\CategoryService.class
+com\finances\finT\Service\ExpenseService.class
+com\finances\finT\Controllers\UserController.class
+com\finances\finT\Controllers\ExpenseController.class
+com\finances\finT\Controllers\expenseDTO.class
+com\finances\finT\repositories\ExpensesRepository.class
+com\finances\finT\Service\ExpenseServiceImpl.class

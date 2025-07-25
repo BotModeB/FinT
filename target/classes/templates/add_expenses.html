@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить расход</title>
+    <style>
+        /* ОБЩИЕ СТИЛИ (как в login/register) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            z-index: 2;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            width: 40%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+        }
+        
+        /* ФОРМА ДОБАВЛЕНИЯ РАСХОДА */
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+            height: 55px;
+        }
+        
+        textarea {
+            min-height: 150px;
+            padding: 16px 16px 16px 50px;
+            resize: vertical;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            background-color: #fff;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 43px;
+            color: #7f8c8d;
+            font-size: 20px;
+            z-index: 2;
+        }
+        
+        /* Убрали стили для .amount-input::after */
+        .amount-input {
+            position: relative;
+        }
+        
+        .amount-input .input-icon {
+            left: 16px;
+        }
+        
+        .amount-input input {
+            padding-left: 50px;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 16px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 55px;
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #ecf0f1, #d5dbdb);
+            color: #2c3e50;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #d5dbdb, #ecf0f1);
+            transform: translateY(-3px);
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .back-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+            transform: translateX(-5px);
+        }
+        
+        .back-link i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="logo" style="text-align: center; margin-bottom: 25px;">
+            <i class="fas fa-wallet" style="font-size: 50px; background: linear-gradient(135deg, #3498db, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
+        </div>
+        
+        <h2>Добавить новый расход</h2>
+        
+        <form th:action="@{/expenses/add}" th:object="${expense}" method="post">
+            <div class="form-group">
+                <label for="description">Описание расхода</label>
+                <div class="input-icon">
+                    <i class="fas fa-pen"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="description" 
+                    th:field="*{description}" 
+                    required
+                    placeholder="Например: Покупка продуктов">
+            </div>
+            
+            <div class="form-group amount-input">
+                <label for="amount">Сумма</label>
+                <div class="input-icon">
+                    <i class="fas fa-ruble-sign"></i>
+                </div>
+                <input 
+                    type="number" 
+                    id="amount" 
+                    step="0.01" 
+                    th:field="*{amount}" 
+                    required
+                    placeholder="0.00">
+            </div>
+            
+            <div class="form-group">
+                <label for="categoryId">Категория</label>
+                <div class="input-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <select id="categoryId" th:field="*{categoryId}">
+                    <option value="">-- Выберите категорию --</option>
+                    <option th:each="category : ${categories}" 
+                            th:value="${category.id}" 
+                            th:text="${category.name}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Примечания</label>
+                <div class="input-icon notes-icon">
+                    <i class="fas fa-comment-alt"></i>
+                </div>
+                <textarea 
+                    id="notes" 
+                    th:field="*{notes}" 
+                    placeholder="Детали расхода, например: Купил молоко, хлеб, яйца"></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+                <a th:href="@{/expenses}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Отмена
+                </a>
+            </div>
+        </form>
+        
+        <div class="footer-links">
+            <a th:href="@{/expenses}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Вернуться к списку расходов
+            </a>
+        </div>
+    </div>
+</body>
+</html>

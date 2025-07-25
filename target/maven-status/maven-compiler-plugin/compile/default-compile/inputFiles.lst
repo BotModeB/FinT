@@ -1,0 +1,15 @@
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Controllers\categoryController.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Controllers\categoryDTO.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Controllers\ExpenseController.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Controllers\expenseDTO.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Controllers\UserController.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\FinTApplication.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\models\categories.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\models\expenses.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\models\users.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\repositories\CategoryRepository.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\repositories\ExpensesRepository.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\repositories\UserRepository.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Service\CategoryService.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Service\ExpenseService.java
+C:\Users\tburs\Desktop\finT\finT\src\main\java\com\finances\finT\Service\ExpenseServiceImpl.java

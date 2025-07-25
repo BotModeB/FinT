@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои расходы</title>
+    <style>
+        /* ОБЩИЕ СТИЛИ (как в login/register) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            z-index: 2;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        h1::after, h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            width: 40%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+        }
+        
+        /* СТИЛИ СПИСКА РАСХОДОВ */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+            height: 55px;
+        }
+        
+        .add-btn:hover {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+        }
+        
+        .add-btn i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .summary {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 18px;
+            border: 2px solid #e1e5e9;
+        }
+        
+        .total-amount {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        
+        .expenses-container {
+            margin-top: 20px;
+        }
+        
+        .expense-card {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .expense-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #3498db;
+        }
+        
+        .expense-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .expense-title {
+            font-weight: 600;
+            font-size: 20px;
+            color: #2c3e50;
+            max-width: 70%;
+        }
+        
+        .expense-amount {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 20px;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        .expense-category {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .expense-notes {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            color: #555;
+            border-left: 4px solid #3498db;
+        }
+        
+        .expense-notes-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .expense-notes-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .notes-content {
+            line-height: 1.6;
+            padding-left: 5px;
+        }
+        
+        .action-btns {
+            margin-top: 25px;
+            text-align: right;
+        }
+        
+        .delete-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            height: 45px;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .delete-btn i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .back-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+            transform: translateX(-5px);
+        }
+        
+        .back-link i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+        
+        .empty-state p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        /* АНИМАЦИИ */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .expense-card {
+            animation: fadeIn 0.5s ease-out;
+            animation-fill-mode: backwards;
+        }
+        
+        .expense-card:nth-child(1) { animation-delay: 0.1s; }
+        .expense-card:nth-child(2) { animation-delay: 0.2s; }
+        .expense-card:nth-child(3) { animation-delay: 0.3s; }
+        .edit-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            height: 45px;
+            box-shadow: 0 4px 10px rgba(149, 165, 166, 0.3);
+            margin-right: 10px;
+        }
+
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(149, 165, 166, 0.4);
+        }
+
+        .edit-btn i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="logo" style="text-align: center; margin-bottom: 25px;">
+            <i class="fas fa-wallet" style="font-size: 50px; background: linear-gradient(135deg, #3498db, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
+        </div>
+        
+        <header>
+            <h1>История расходов</h1>
+            <a th:href="@{/expenses/add}" class="add-btn">
+                <i class="fas fa-plus"></i> Добавить расход
+            </a>
+        </header>
+        
+        <div class="summary">
+            <span>Общая сумма расходов:</span>
+            <span class="total-amount" th:text="${#numbers.formatDecimal(totalAmount, 1, 2) + ' ₽'}"></span>
+        </div>
+        
+        <div class="expenses-container">
+            <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>У вас пока нет добавленных расходов</p>
+                <p>Начните с добавления нового расхода</p>
+            </div>
+            
+            <div th:each="expense : ${expenses}" class="expense-card">
+                <div class="expense-header">
+                    <span class="expense-title" th:text="${expense.description}"></span>
+                    <span class="expense-amount" th:text="${#numbers.formatDecimal(expense.amount, 1, 2) + ' ₽'}"></span>
+                </div>
+                
+                <div>
+                    <span class="expense-category" th:text="${expense.category.name}"></span>
+                </div>
+                
+                <div th:if="${expense.notes != null and !expense.notes.isEmpty()}" class="expense-notes">
+                    <div class="expense-notes-title">
+                        <i class="fas fa-sticky-note"></i> Примечания:
+                    </div>
+                    <div class="notes-content" th:text="${expense.notes}"></div>
+                </div>
+                <div class="action-btns">
+                    <form th:action="@{/expenses/edit{id}(id=${expense.id})}" method="get" style="display: inline; margin-right: 10px;">
+                        <button type="submit" class="edit-btn">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                    </form>
+                    <form th:action="@{/expenses/delete/{id}(id=${expense.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="delete-btn">
+                            <i class="fas fa-trash-alt"></i> Удалить
+                        </button>
+                    </form>
+                </div>
+                <!-- <div class="action-btns">
+                    <form th:action="@{/expenses/delete/{id}(id=${expense.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="delete-btn">
+                            <i class="fas fa-trash-alt"></i> Удалить
+                        </button>
+                    </form>
+                </div> -->
+            </div>
+        </div>
+        
+        <div class="footer-links">
+            <a th:href="@{/login}" class="back-link">
+                <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+            </a>
+        </div>
+    </div>
+</body>
+</html>

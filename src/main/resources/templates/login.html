@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в систему</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            z-index: 2;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            width: 40%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+            height: 55px;
+        }
+        
+        input:focus,
+        select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            background-color: #fff;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 43px;
+            color: #7f8c8d;
+            font-size: 20px;
+            z-index: 2;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 16px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 55px;
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #ecf0f1, #d5dbdb);
+            color: #2c3e50;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #d5dbdb, #ecf0f1);
+            transform: translateY(-3px);
+        }
+        
+        .password-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 8px;
+            display: block;
+            padding-left: 5px;
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+            color: #7f8c8d;
+            font-size: 16px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-links a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            margin: 0 5px;
+        }
+        
+        .footer-links a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+            transform: translateY(-2px);
+        }
+        
+        /* СТИЛИ ДЛЯ СООБЩЕНИЙ */
+        .message {
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .message i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .error {
+            background: linear-gradient(to right, #ffebee, #ffcdd2);
+            color: #c62828;
+            border: 2px solid #ff8a80;
+        }
+        
+        .success {
+            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+            color: #2e7d32;
+            border: 2px solid #81c784;
+        }
+        
+        /* АНИМАЦИИ */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .container {
+            animation: fadeIn 0.7s ease-out;
+        }
+        
+        .form-group {
+            animation: fadeIn 0.7s ease-out;
+            animation-fill-mode: backwards;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .btn-container { animation-delay: 0.4s; }
+        .footer-links { animation-delay: 0.5s; }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .logo i {
+            font-size: 50px;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Общий логотип -->
+        <div class="logo">
+            <i class="fas fa-wallet"></i>
+        </div>
+        
+        <h2>Вход в систему</h2>
+        
+        <!-- Сообщения -->
+        <div th:if="${param.error}" class="message error">
+            <i class="fas fa-exclamation-circle"></i> Неверное имя пользователя или пароль
+        </div>
+        
+        <div th:if="${param.registered}" class="message success">
+            <i class="fas fa-check-circle"></i> Регистрация прошла успешно! Пожалуйста, войдите в систему.
+        </div>
+        
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    required
+                    placeholder="Ваш никнейм">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required
+                    placeholder="Введите ваш пароль">
+            </div>
+            
+            <div class="form-group">
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="footer-links">
+            <p>Еще нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</body>
+</html>
