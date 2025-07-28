@@ -4,11 +4,20 @@ import java.math.BigDecimal;
 
 public class expenseDTO {
     private Long categoryId;
+    private Long id;
     private String description;
     private BigDecimal amount;
     private String notes;
     
     // Геттеры и сеттеры
+    public Long getId() {
+        return categoryId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getDescription() {
         return description;
     }

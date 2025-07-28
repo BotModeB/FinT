@@ -364,7 +364,7 @@
                     <div class="notes-content" th:text="${expense.notes}"></div>
                 </div>
                 <div class="action-btns">
-                    <form th:action="@{/expenses/edit{id}(id=${expense.id})}" method="get" style="display: inline; margin-right: 10px;">
+                    <form th:action="@{/expenses/edit/{id}(id=${expense.id})}" method="get" style="display: inline; margin-right: 10px;">
                         <button type="submit" class="edit-btn">
                             <i class="fas fa-edit"></i> Редактировать
                         </button>

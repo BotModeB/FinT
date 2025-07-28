@@ -1,6 +1,10 @@
 package com.finances.finT.service;
 
 import java.util.List;
+import java.util.Optional;
+
+
+import com.finances.finT.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +46,24 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
     @Override
     public List<expenses> getExpensesByUser(users user) {
-    return expenseRepository.findByUser(user);
-}
+        return expenseRepository.findByUser(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public expenses getExpenseById(Long id) {
+        Optional<expenses> expenseOptional = expenseRepository.findById(id);
+        return expenseOptional.orElseThrow(() -> 
+            new ResourceNotFoundException("Expense not found with id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public expenses updateExpense(expenses expense) {
+        if (!expenseRepository.existsById(expense.getId())) {
+            throw new ResourceNotFoundException("Expense not found with id: " + expense.getId());
+        }
+        return expenseRepository.save(expense);
+    }   
+
 }

@@ -19,6 +19,7 @@ import com.finances.finT.repositories.UserRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale.Category;
 
 @Controller
 @RequestMapping("/expenses")
@@ -39,23 +40,23 @@ public class ExpenseController {
         this.userRepository = userRepository; 
     }
 
-@GetMapping("/add")
-public String showAddForm(Model model) {
-    try {
-        // Логирование для отладки
-        System.out.println("Loading categories...");
-        List<categories> categories = categoryService.getAllCategories();
-        System.out.println("Found " + categories.size() + " categories");
-        
-        model.addAttribute("categories", categories);
-        model.addAttribute("expense", new expenseDTO());
-        return "add_expenses";
-    } catch (Exception e) {
-        System.err.println("Error in showAddForm: " + e.getMessage());
-        e.printStackTrace();
-        return "test"; // Создайте страницу error.html
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        try {
+            // Логирование для отладки
+            System.out.println("Loading categories...");
+            List<categories> categories = categoryService.getAllCategories();
+            System.out.println("Found " + categories.size() + " categories");
+            
+            model.addAttribute("categories", categories);
+            model.addAttribute("expense", new expenseDTO());
+            return "add_expenses";
+        } catch (Exception e) {
+            System.err.println("Error in showAddForm: " + e.getMessage());
+            e.printStackTrace();
+            return "test"; // Создайте страницу error.html
+        }
     }
-}
 
     @PostMapping("/add")
     public String addExpense(
@@ -90,24 +91,8 @@ public String showAddForm(Model model) {
         expenseService.deleteExpense(id);
         return "redirect:/expenses";
     }
-    @GetMapping("/edit/{id}")
-    public String linkExpense() {
-        return "edit_expenses";
-    }
+    
 
-    // @GetMapping
-    // public String getAllExpenses(Model model) {
-    //     List<expenses> expensesList = expenseService.getAllExpenses();
-    //     model.addAttribute("expenses", expensesList);
-        
-    //     // Рассчет общей суммы
-    //     BigDecimal total = expensesList.stream()
-    //         .map(expenses::getAmount)
-    //         .reduce(BigDecimal.ZERO, BigDecimal::add);
-    //     model.addAttribute("totalAmount", total);
-        
-    //     return "expenses_list";
-    // }
 
     @GetMapping
     public String getUserExpenses(Model model, Authentication authentication) {
@@ -125,5 +110,51 @@ public String showAddForm(Model model) {
     
     return "expenses_list"; 
     
-}
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        expenses expense = expenseService.getExpenseById(id);
+        expenseDTO dto = new expenseDTO();
+        dto.setId(expense.getId());
+        dto.setDescription(expense.getDescription());
+        dto.setAmount(expense.getAmount());
+        dto.setNotes(expense.getNotes());
+        dto.setCategoryId(expense.getCategory().getId());
+        
+        model.addAttribute("expense", dto); 
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "edit_expenses";
+    }
+
+    @PostMapping("/edit")
+    public String updateExpense(
+        @ModelAttribute("expense") expenseDTO dto,
+        Authentication authentication) {
+        
+        String username = authentication.getName();
+        users user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        
+        categories category = categoryService.getCategoryById(dto.getCategoryId())
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        
+        expenses expense = new expenses();
+        expense.setId(dto.getId());
+        expense.setDescription(dto.getDescription());
+        expense.setAmount(dto.getAmount());
+        expense.setNotes(dto.getNotes());
+        expense.setUser(user);
+        expense.setCategory(category);
+        
+        expenseService.updateExpense(expense);
+        return "redirect:/expenses";
+    }
+
+    // @GetMapping
+    // public String listExpenses(Model model) {
+    //     model.addAttribute("expenses", expenseService.getAllExpenses());
+    //     return "expenses-list";
+    // }
+    
 }

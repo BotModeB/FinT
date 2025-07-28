@@ -10,4 +10,6 @@ public interface ExpenseService {
     List<expenses> getExpensesByCategory(Long categoryId);
     void deleteExpense(Long id);
     List<expenses> getExpensesByUser(users user);
+    expenses getExpenseById(Long id);
+    expenses updateExpense(expenses expense);
 }
